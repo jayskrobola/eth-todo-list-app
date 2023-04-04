@@ -1,14 +1,20 @@
 App = {
+    contracts: {},
+    loading: false,
+
     load: async () => {
         // Load app...
         console.log("App loading...")
         await App.loadWeb3()
         await App.loadAccount()
+        await App.loadContract()
+        await App.render()
     },
 
     loadWeb3: async () => {
         // Modern dapp browsers...
         if (window.ethereum) {
+            App.web3Provider = ethereum
             window.web3 = new Web3(ethereum)
             try {
                 // Request account access if needed
@@ -35,6 +41,52 @@ App = {
 
     loadAccount: async () => {
         App.account = web3.eth.accounts[0]
+    },
+
+    loadContract: async () => {
+        const todoList = await $.getJSON('TodoList.json')
+        App.contracts.TodoList = TruffleContract(todoList)
+        App.contracts.TodoList.setProvider(App.web3Provider)
+
+        // Populate smart contract with values from blockchain
+        App.todoList = await App.contracts.TodoList.deployed()
+    },
+
+    render: async () => {
+        // Prevent double rendering
+        if (App.loading) {
+            return
+        }
+
+        // Update app loading state
+        App.setLoading(true)
+        
+        // Render account
+        $('#account').html(App.account)
+
+        App.setLoading(false)
+    },
+
+    renderTasks: async () => {
+        // Load task count from blockchain
+
+        // Render out each task
+
+        // Show task
+    },
+
+    setLoading: (boolean) => {
+        App.loading = boolean
+        const loader = $('#loader')
+        const content = $('#content')
+        if (boolean) {
+            loader.show()
+            content.hide()
+        }
+        else {
+            loader.hide()
+            content.show()
+        }
     }
 }
 
