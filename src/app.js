@@ -1,26 +1,18 @@
-Web3 = require('web3')
-
 App = {
     load: async () => {
         // Load app...
         console.log("App loading...")
         await App.loadWeb3()
+        await App.loadAccount()
     },
 
     loadWeb3: async () => {
-        if (typeof web3 !== 'undefined') {
-            App.web3Provider = web3.currentProvider
-            web3 = new Web3(web3.currentProvider)
-        } 
-        else {
-            window.alert("Please connect to Metamask.")
-        }
         // Modern dapp browsers...
         if (window.ethereum) {
             window.web3 = new Web3(ethereum)
             try {
                 // Request account access if needed
-                await ethereum.enable()
+                await ethereum.eth_requestAccounts()
                 // Acccounts now exposed
                 web3.eth.sendTransaction({/* ... */})
             } 
@@ -39,6 +31,10 @@ App = {
         else {
             console.log('Non-Ethereum browser detected. You should consider trying MetaMask!')
         }
+    },
+
+    loadAccount: async () => {
+        App.account = web3.eth.accounts[0]
     }
 }
 
