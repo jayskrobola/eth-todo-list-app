@@ -1,4 +1,4 @@
-# eth-todo-list2
+# eth-todo-list-app
 
 This "Hello World" web3 app was created with assistance from [this Dapp University guide](https://www.youtube.com/watch?v=coQ5dg8wM2o).
 
