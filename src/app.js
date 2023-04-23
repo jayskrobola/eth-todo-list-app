@@ -9,6 +9,7 @@ App = {
         await App.loadAccount()
         await App.loadContract()
         await App.render()
+        web3.eth.defaultAccount = App.account
     },
 
     loadWeb3: async () => {
@@ -41,7 +42,6 @@ App = {
 
     loadAccount: async () => {
         App.account = web3.eth.accounts[0]
-        web3.eth.defaultAccount = App.account
     },
 
     loadContract: async () => {
@@ -90,7 +90,7 @@ App = {
             $newTaskTemplate.find('input')
                             .prop('name', taskId)
                             .prop('checked', taskCompleted)
-                            // .on('click', App.toggleCompleted)
+                            .on('click', App.toggleComplete)
 
             // Put task in correct list
             if (taskCompleted) {
@@ -109,6 +109,14 @@ App = {
         App.setLoading(true)
         const content = $('#newTask').val()
         await App.todoList.createTask(content)
+        window.location.reload()
+        App.setLoading(false)
+    },
+
+    toggleComplete: async (e) => {
+        App.setLoading(true)
+        const taskId = e.target.name
+        await App.todoList.toggleComplete(taskId)
         window.location.reload()
         App.setLoading(false)
     },
